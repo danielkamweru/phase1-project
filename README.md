@@ -1,9 +1,9 @@
 
 # (Phase-1 Project)
-#### Date 2025/9/25
+#### Date,2025/9/25
 #### By *Daniel Kamweru
-
 ##Description
+I have used my knowledge in Html,Css and javascript.
 #live link[github]
 ### Technologies used
 Html,
