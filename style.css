@@ -1,0 +1,57 @@
+
+body {
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+#toggle-mode {
+  margin: 10px 0;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+body{
+  text-align:center;
+}
+form {
+  display: flex;
+  justify-content: space-around;
+}
+h1,h2{
+  color: blue;
+}
+button{
+  color:magenta;
+  justify-content: space-between;
+}
+#submit{
+  background-color: blue;
+}
+#comment {
+  width: 60%;
+  padding: 20px;
+  font-size: 16px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+#submit {
+  width: 80px;         
+  padding: 1px 1px;    
+  font-size: 15px; 
+  height: 5vh;     
+}
+#studentNa{
+  width: 200px;         
+  padding: 1px 1px;    
+  font-size: 15px; 
+  height: 5vh;
+}
+
+
+
+
+
