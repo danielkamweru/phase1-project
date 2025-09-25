@@ -7,7 +7,7 @@
 #### By *Daniel Kamweru
 ##Description
 This project is to help in taking student feedback on their learning.
-#live link[github ]
+#live link[ https://github.com/danielkamweru/phase1-project]
 ### Technologies used
 Html,
 css,
