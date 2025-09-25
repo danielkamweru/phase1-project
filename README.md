@@ -4,7 +4,7 @@
 ##By Daniel Kamweru
 # (Phase-1 Project)
 #### Date 2025/9/25
-#### By *Daniel Kamweru*
+#### By *Daniel Kamweru
 ##Description
 #live link[github]
 ### Technologies used
