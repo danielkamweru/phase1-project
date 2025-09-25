@@ -1,6 +1,6 @@
-#(Phase-1 Project)
-#2025/9/25
-#By Daniel Kamweru
+##(Phase-1 Project)
+##2025/9/25
+##By Daniel Kamweru
 ##Description
 #live link[github]
 ### Technologies used
