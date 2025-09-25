@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 ##(Phase-1 Project)
 ##2025/9/25
 ##By Daniel Kamweru
+=======
+# (Phase-1 Project)
+#### Date 2025/9/25
+#### By *Daniel Kamweru*
+>>>>>>> 060bb07 (phase-1 project)
 ##Description
 #live link[github]
 ### Technologies used
