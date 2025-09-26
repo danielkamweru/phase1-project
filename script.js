@@ -1,10 +1,17 @@
+
 const feedbackContainer = document.getElementById("feedback-container");
 const form = document.getElementById("feedback-form");
 const toggleBtn = document.getElementById("toggle-mode");
 
+const studentNameInput = document.getElementById("studentName");
+const commentInput = document.getElementById("comment");
+
 const API_URL = "http://localhost:3000/feedback";
 
-// 1. Fetch and render feedback
+let isEditing = false;
+let editingId = null;
+
+// Load all feedback
 function loadFeedback() {
   fetch(API_URL)
     .then((res) => res.json())
@@ -13,6 +20,8 @@ function loadFeedback() {
       data.forEach(renderFeedback);
     });
 }
+
+// Render individual feedback
 function renderFeedback(item) {
   const div = document.createElement("div");
   div.className = "feedback";
@@ -21,14 +30,20 @@ function renderFeedback(item) {
     <p class="votes">Votes: <span>${item.votes}</span></p>
     <button class="upvote" data-id="${item.id}">👍 Upvote</button>
     <button class="downvote" data-id="${item.id}">👎 Downvote</button>
+    <button class="edit" data-id="${item.id}">✏️ Edit</button>
+    <button class="delete" data-id="${item.id}">🗑️ Delete</button>
   `;
   feedbackContainer.appendChild(div);
 }
-// 2. Upvote and Downvote (PUT)
+
+// Handle voting, edit, delete
 feedbackContainer.addEventListener("click", (e) => {
+  const id = e.target.dataset.id;
+
+  // Voting
   if (e.target.classList.contains("upvote") || e.target.classList.contains("downvote")) {
-    const id = e.target.dataset.id;
     const isUpvote = e.target.classList.contains("upvote");
+
     fetch(`${API_URL}/${id}`)
       .then((res) => res.json())
       .then((item) => {
@@ -41,28 +56,85 @@ feedbackContainer.addEventListener("click", (e) => {
       })
       .then(() => loadFeedback());
   }
+
+  // Delete
+  if (e.target.classList.contains("delete")) {
+    fetch(`${API_URL}/${id}`, {
+      method: "DELETE"
+    })
+      .then(() => loadFeedback());
+  }
+
+  // Edit
+  if (e.target.classList.contains("edit")) {
+    fetch(`${API_URL}/${id}`)
+      .then((res) => res.json())
+      .then((item) => {
+        studentNameInput.value = item.studentName;
+        commentInput.value = item.comment;
+        isEditing = true;
+        editingId = item.id;
+      });
+  }
 });
-// 3. Form submit (POST)
+
+// Submit form (create or edit)
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const newFeedback = {
-    studentName: document.getElementById("studentName").value,
-    comment: document.getElementById("comment").value,
-    votes: 0
-  };
-  fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newFeedback)
-  })
-    .then(() => {
-      form.reset();
-      loadFeedback();
-    });
+
+  const studentName = studentNameInput.value.trim();
+  const comment = commentInput.value.trim();
+
+  if (!studentName || !comment) return;
+
+  if (isEditing) {
+    // Edit feedback (PUT)
+    fetch(`${API_URL}/${editingId}`)
+      .then((res) => res.json())
+      .then((oldData) => {
+        return fetch(`${API_URL}/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...oldData,
+            studentName,
+            comment
+          })
+        });
+      })
+      .then(() => {
+        isEditing = false;
+        editingId = null;
+        form.reset();
+        loadFeedback();
+      });
+  } else {
+    // New feedback (POST)
+    const newFeedback = {
+      studentName,
+      comment,
+      votes: 0
+    };
+
+    fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newFeedback)
+    })
+      .then(() => {
+        form.reset();
+        loadFeedback();
+      });
+  }
 });
-// 4. Toggle dark/light mode
+
+// Toggle dark/light mode
 toggleBtn.addEventListener("click", () => {
   document.body.classList.toggle("dark");
 });
-// Initialize 
+
+// Initial load
 loadFeedback();
+
+          
+

@@ -3,7 +3,7 @@
     {
       "id": "1",
       "studentName": "Alice",
-      "comment": "Great lecture",
+      "comment": "Great and lovely learning",
       "votes": 10
     },
     {
@@ -27,14 +27,8 @@
     {
       "id": "5",
       "studentName": "Ethan",
-      "comment": "Enjoyed the interactive sessions.",
+      "comment": "Loved the group projects!",
       "votes": 5
-    },
-    {
-      "id": "5300",
-      "studentName": "Daniel kamweru",
-      "comment": "I think the learning was good,I have learned more.",
-      "votes": 1
     }
   ]
 }
