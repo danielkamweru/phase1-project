@@ -2,15 +2,11 @@
 const feedbackContainer = document.getElementById("feedback-container");
 const form = document.getElementById("feedback-form");
 const toggleBtn = document.getElementById("toggle-mode");
-
 const studentNameInput = document.getElementById("studentName");
 const commentInput = document.getElementById("comment");
-
 const API_URL = "http://localhost:3000/feedback";
-
 let isEditing = false;
 let editingId = null;
-
 // Load all feedback
 function loadFeedback() {
   fetch(API_URL)
@@ -20,7 +16,6 @@ function loadFeedback() {
       data.forEach(renderFeedback);
     });
 }
-
 // Render individual feedback
 function renderFeedback(item) {
   const div = document.createElement("div");
@@ -30,16 +25,14 @@ function renderFeedback(item) {
     <p class="votes">Votes: <span>${item.votes}</span></p>
     <button class="upvote" data-id="${item.id}">👍 Upvote</button>
     <button class="downvote" data-id="${item.id}">👎 Downvote</button>
-    <button class="edit" data-id="${item.id}">✏️ Edit</button>
+    <button class="edit" data-id="${item.id}"> ✏️Edit</button>
     <button class="delete" data-id="${item.id}">🗑️ Delete</button>
   `;
   feedbackContainer.appendChild(div);
 }
-
 // Handle voting, edit, delete
 feedbackContainer.addEventListener("click", (e) => {
   const id = e.target.dataset.id;
-
   // Voting
   if (e.target.classList.contains("upvote") || e.target.classList.contains("downvote")) {
     const isUpvote = e.target.classList.contains("upvote");
@@ -56,7 +49,6 @@ feedbackContainer.addEventListener("click", (e) => {
       })
       .then(() => loadFeedback());
   }
-
   // Delete
   if (e.target.classList.contains("delete")) {
     fetch(`${API_URL}/${id}`, {
@@ -64,7 +56,6 @@ feedbackContainer.addEventListener("click", (e) => {
     })
       .then(() => loadFeedback());
   }
-
   // Edit
   if (e.target.classList.contains("edit")) {
     fetch(`${API_URL}/${id}`)
@@ -77,18 +68,14 @@ feedbackContainer.addEventListener("click", (e) => {
       });
   }
 });
-
 // Submit form (create or edit)
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-
   const studentName = studentNameInput.value.trim();
   const comment = commentInput.value.trim();
-
   if (!studentName || !comment) return;
-
   if (isEditing) {
-    // Edit feedback (PUT)
+    // Edit feedback (PUT) after clicking it directs you to the feedback of the person you selected.
     fetch(`${API_URL}/${editingId}`)
       .then((res) => res.json())
       .then((oldData) => {
@@ -115,7 +102,6 @@ form.addEventListener("submit", (e) => {
       comment,
       votes: 0
     };
-
     fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -127,12 +113,10 @@ form.addEventListener("submit", (e) => {
       });
   }
 });
-
 // Toggle dark/light mode
 toggleBtn.addEventListener("click", () => {
   document.body.classList.toggle("dark");
 });
-
 // Initial load
 loadFeedback();
 
