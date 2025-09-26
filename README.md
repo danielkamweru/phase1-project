@@ -1,10 +1,22 @@
 
+<<<<<<< HEAD
 # (Phase-1 Project)
 #### Date,2025/9/25
 #### By *Daniel Kamweru
 ##Description
 I have used my knowledge in Html,Css and javascript.
 #live link[github]
+=======
+#(Phase-1 Project)
+##2025/9/25
+##By Daniel Kamweru
+# (Phase-1 Project)
+#### Date 2025/9/25
+#### By *Daniel Kamweru
+Description
+This project is to help in taking student feedback on their learning.
+#live link[ https://github.com/danielkamweru/phase1-project]
+>>>>>>> 25e89686bd85cfb262034673691b2be689d2f600
 ### Technologies used
 Html,
 css,
