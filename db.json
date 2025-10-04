@@ -3,7 +3,7 @@
     {
       "id": "1",
       "studentName": "Alice",
-      "comment": "Great and lovely learning",
+      "comment": "Great and lovely experience",
       "votes": 10
     },
     {
@@ -34,7 +34,7 @@
       "id": "161e",
       "studentName": "Daniel",
       "comment": "It was a nice lecture",
-      "votes": 1
+      "votes": 4
     }
   ]
 }

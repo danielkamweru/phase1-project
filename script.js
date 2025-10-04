@@ -107,10 +107,6 @@ form.addEventListener("submit", (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newFeedback)
     })
-      .then(() => {
-        form.reset();
-        loadFeedback();
-      });
   }
 });
 // Toggle dark/light mode
