@@ -91,6 +91,6 @@ Or open an Issue in the repo.
 
 📜 License
 This project is licensed by *Daniel Kamweru.
-©️ Copyright
+ Copyright
 
-© 2025 Student Feedback Poll – All Rights Reserved
+©️ 2025 Student Feedback Poll – All Rights Reserved
