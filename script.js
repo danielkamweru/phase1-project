@@ -4,7 +4,7 @@ const form = document.getElementById("feedback-form");
 const toggleBtn = document.getElementById("toggle-mode");
 const studentNameInput = document.getElementById("studentName");
 const commentInput = document.getElementById("comment");
-const API_URL = "https://json-server-vercel-ucrr-idlxeae29-danielkamwerus-projects.vercel.app/feedback";
+const API_URL = "https://json-server-vercel-nmfp.vercel.app/feedback";
 let isEditing = false;
 let editingId = null;
 // Load all feedback
