@@ -4,7 +4,7 @@ const form = document.getElementById("feedback-form");
 const toggleBtn = document.getElementById("toggle-mode");
 const studentNameInput = document.getElementById("studentName");
 const commentInput = document.getElementById("comment");
-const API_URL = "http://localhost:3000/feedback";
+const API_URL = "https://json-server-vercel-ucrr-idlxeae29-danielkamwerus-projects.vercel.app/feedback";
 let isEditing = false;
 let editingId = null;
 // Load all feedback
@@ -36,7 +36,6 @@ feedbackContainer.addEventListener("click", (e) => {
   // Voting
   if (e.target.classList.contains("upvote") || e.target.classList.contains("downvote")) {
     const isUpvote = e.target.classList.contains("upvote");
-
     fetch(`${API_URL}/${id}`)
       .then((res) => res.json())
       .then((item) => {
