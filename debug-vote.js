@@ -1,14 +1,58 @@
 // Debug version to find refresh source
 console.log('Debug script loaded');
 
+// Store all feedback data
+let allFeedbackData = [];
+
 // Load feedback
 fetch('http://localhost:3000/feedback')
   .then(res => res.json())
   .then(data => {
     console.log('Data loaded:', data.length, 'items');
+    allFeedbackData = data;
     displayFeedback(data);
     updateStats();
+    setupSearchAndSort();
   });
+
+// Setup search and sort functionality
+function setupSearchAndSort() {
+  const searchInput = document.getElementById('search-input');
+  const sortFilter = document.getElementById('sort-filter');
+  
+  searchInput.addEventListener('input', filterAndDisplay);
+  sortFilter.addEventListener('change', filterAndDisplay);
+}
+
+// Filter and display feedback based on search and sort
+function filterAndDisplay() {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  const sortBy = document.getElementById('sort-filter').value;
+  
+  let filtered = allFeedbackData.filter(item => 
+    item.studentName.toLowerCase().includes(searchTerm) ||
+    item.comment.toLowerCase().includes(searchTerm)
+  );
+  
+  // Sort the filtered results
+  switch (sortBy) {
+    case 'newest':
+      filtered.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+      break;
+    case 'oldest':
+      filtered.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      break;
+    case 'most-voted':
+      filtered.sort((a, b) => b.votes - a.votes);
+      break;
+    case 'least-voted':
+      filtered.sort((a, b) => a.votes - b.votes);
+      break;
+  }
+  
+  displayFeedback(filtered);
+  console.log('Filtered results:', filtered.length, 'items');
+}
 
 function displayFeedback(data) {
   const container = document.getElementById('feedback-container');
@@ -28,7 +72,7 @@ function displayFeedback(data) {
       <div class="feedback-actions">
         <div class="vote-section">
           <span onclick="voteUp('${item.id}')" style="cursor: pointer; padding: 8px 12px; background: #06d6a0; color: white; border-radius: 20px; margin: 2px; font-size: 14px;">👍</span>
-          <span id="votes-${item.id}" style="padding: 5px 10px; font-weight: bold; background: #f0f0f0; border-radius: 15px; min-width: 40px; text-align: center; margin: 2px;">${item.votes}</span>
+          <span id="votes-${item.id}" class="vote-count">${item.votes}</span>
           <span onclick="voteDown('${item.id}')" style="cursor: pointer; padding: 8px 12px; background: #ff6b35; color: white; border-radius: 20px; margin: 2px; font-size: 14px;">👎</span>
         </div>
         <div class="action-buttons">

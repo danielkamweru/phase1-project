@@ -4,7 +4,7 @@
 Welcome to the **Student Feedback Poll App** 🎉  
 A modern and interactive platform where students can leave feedback, upvote or downvote opinions, and engage in discussions.  
 
-![Feedback Banner](https://cdn.pixabay.com/photo/2017/01/31/19/15/feedback-2026756_960_720.png)
+
 
 ---
 
@@ -17,10 +17,7 @@ A modern and interactive platform where students can leave feedback, upvote or d
 ⭐ **Dynamic Rendering** – Feedback updates instantly without page refresh  
 
 ---
-
-## 🖼️ Demo Preview  
-
-![Demo Screenshot](https://cdn.pixabay.com/photo/2016/03/31/20/51/app-1294848_960_720.png)  
+ 
 
 ---
 

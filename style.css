@@ -251,6 +251,15 @@ body.dark {
   color: white;
 }
 
+.dark .filters select option {
+  background: #073b4c;
+  color: white;
+}
+
+.dark .filters input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .feedback-grid {
   display: grid;
   gap: 20px;
@@ -348,16 +357,23 @@ body.dark {
 }
 
 .vote-count {
-  font-weight: 600;
-  padding: 5px 10px;
+  font-weight: 700;
+  padding: 8px 15px;
   background: #f0f0f0;
-  border-radius: 15px;
-  min-width: 40px;
+  color: #333;
+  border-radius: 20px;
+  min-width: 50px;
   text-align: center;
+  font-size: 16px;
+  border: 2px solid #06d6a0;
+  box-shadow: 0 2px 8px rgba(6, 214, 160, 0.3);
 }
 
 .dark .vote-count {
-  background: rgba(255, 255, 255, 0.2);
+  background: #06d6a0 !important;
+  color: #ffffff !important;
+  border-color: #06d6a0 !important;
+  box-shadow: 0 2px 8px rgba(6, 214, 160, 0.6) !important;
 }
 
 .action-buttons {
