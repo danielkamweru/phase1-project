@@ -49,7 +49,35 @@ function setupCharCounter() {
 function setupEventListeners() {
   form.addEventListener("submit", handleSubmit);
   toggleBtn.addEventListener("click", toggleTheme);
-  feedbackContainer.addEventListener("click", handleFeedbackActions);
+  
+  // Use event delegation for vote buttons
+  document.addEventListener("click", function(e) {
+    if (e.target.closest('.upvote')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = e.target.closest('.upvote').dataset.id;
+      updateVoteCount(id, true);
+    }
+    if (e.target.closest('.downvote')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = e.target.closest('.downvote').dataset.id;
+      updateVoteCount(id, false);
+    }
+    if (e.target.closest('.edit-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = e.target.closest('.edit-btn').dataset.id;
+      handleEdit(id);
+    }
+    if (e.target.closest('.delete-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = e.target.closest('.delete-btn').dataset.id;
+      handleDelete(id);
+    }
+  });
+  
   sortFilter.addEventListener("change", handleSort);
   searchInput.addEventListener("input", handleSearch);
   
@@ -58,22 +86,39 @@ function setupEventListeners() {
   commentInput.addEventListener('input', validateForm);
 }
 
+// Simple vote count update - NO REFRESH
+function updateVoteCount(id, isUpvote) {
+  const voteElement = document.querySelector(`[data-id="${id}"]`).closest('.feedback').querySelector('.vote-count');
+  const currentVotes = parseInt(voteElement.textContent);
+  const newVotes = isUpvote ? currentVotes + 1 : currentVotes - 1;
+  voteElement.textContent = newVotes;
+  
+  // Update server silently
+  fetch(`${API_URL}/${id}`)
+    .then(res => res.json())
+    .then(item => {
+      fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...item, votes: newVotes })
+      });
+    })
+    .catch(err => console.log('Update failed:', err));
+}
+
 // Load and display feedback
 async function loadFeedback() {
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error('Failed to load feedback');
-    
     allFeedback = await response.json();
     displayFeedback(allFeedback);
     updateStats();
   } catch (error) {
     console.error('Error loading feedback:', error);
-    showNotification('Failed to load feedback', 'error');
   }
 }
 
-// Display feedback with current filters
+// Display feedback
 function displayFeedback(feedbackList) {
   feedbackContainer.innerHTML = "";
   
@@ -125,63 +170,6 @@ function renderFeedback(item) {
   `;
   
   feedbackContainer.appendChild(div);
-  
-  // Add animation
-  setTimeout(() => div.style.opacity = '1', 100);
-}
-
-// Handle feedback actions (vote, edit, delete)
-function handleFeedbackActions(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  
-  const id = e.target.closest('button')?.dataset.id;
-  if (!id) return;
-  
-  const button = e.target.closest('button');
-  
-  if (button.classList.contains("upvote") || button.classList.contains("downvote")) {
-    handleVote(id, button.classList.contains("upvote"));
-  } else if (button.classList.contains("edit-btn")) {
-    handleEdit(id);
-  } else if (button.classList.contains("delete-btn")) {
-    handleDelete(id);
-  }
-}
-
-// Handle voting
-function handleVote(id, isUpvote) {
-  // Update UI immediately
-  const feedbackElement = document.querySelector(`[data-id="${id}"]`).closest('.feedback');
-  const voteCountElement = feedbackElement.querySelector('.vote-count');
-  const currentVotes = parseInt(voteCountElement.textContent);
-  const newVotes = isUpvote ? currentVotes + 1 : currentVotes - 1;
-  voteCountElement.textContent = newVotes;
-  
-  // Update local data
-  const feedbackIndex = allFeedback.findIndex(f => f.id === id);
-  if (feedbackIndex !== -1) {
-    allFeedback[feedbackIndex].votes = newVotes;
-  }
-  
-  // Update server in background (no await to prevent blocking)
-  fetch(`${API_URL}/${id}`)
-    .then(response => response.json())
-    .then(item => {
-      return fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...item, votes: newVotes })
-      });
-    })
-    .catch(error => {
-      console.error('Vote update failed:', error);
-      // Revert UI on error
-      voteCountElement.textContent = currentVotes;
-      if (feedbackIndex !== -1) {
-        allFeedback[feedbackIndex].votes = currentVotes;
-      }
-    });
 }
 
 // Handle edit
@@ -197,11 +185,8 @@ function handleEdit(id) {
   submitText.textContent = 'Update Feedback';
   submitBtn.style.background = 'linear-gradient(135deg, #ff6b35 0%, #f77f00 100%)';
   
-  // Scroll to form
   form.scrollIntoView({ behavior: 'smooth' });
   studentNameInput.focus();
-  
-  showNotification('Editing mode activated', 'info');
 }
 
 // Handle delete
@@ -210,15 +195,11 @@ async function handleDelete(id) {
   
   try {
     await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    
-    // Update local data
     allFeedback = allFeedback.filter(f => f.id !== id);
     displayFeedback(getFilteredFeedback());
     updateStats();
-    
-    showNotification('Feedback deleted successfully', 'success');
   } catch (error) {
-    showNotification('Failed to delete feedback', 'error');
+    console.error('Delete failed:', error);
   }
 }
 
@@ -229,20 +210,10 @@ async function handleSubmit(e) {
   const studentName = studentNameInput.value.trim();
   const comment = commentInput.value.trim();
   
-  if (!studentName || !comment) {
-    showNotification('Please fill in all fields', 'error');
-    return;
-  }
+  if (!studentName || !comment) return;
   
-  if (comment.length > 500) {
-    showNotification('Comment is too long (max 500 characters)', 'error');
-    return;
-  }
-  
-  const submitButton = submitBtn;
-  const originalText = submitText.textContent;
   submitText.textContent = 'Submitting...';
-  submitButton.disabled = true;
+  submitBtn.disabled = true;
   
   try {
     if (isEditing) {
@@ -250,17 +221,12 @@ async function handleSubmit(e) {
     } else {
       await createFeedback(studentName, comment);
     }
-    
     resetForm();
-    showNotification(
-      isEditing ? 'Feedback updated successfully!' : 'Feedback submitted successfully!',
-      'success'
-    );
   } catch (error) {
-    showNotification('Failed to submit feedback', 'error');
+    console.error('Submit failed:', error);
   } finally {
-    submitText.textContent = originalText;
-    submitButton.disabled = false;
+    submitText.textContent = isEditing ? 'Update Feedback' : 'Submit Feedback';
+    submitBtn.disabled = false;
   }
 }
 
@@ -279,14 +245,9 @@ async function createFeedback(studentName, comment) {
     body: JSON.stringify(newFeedback)
   });
   
-  if (!response.ok) throw new Error('Failed to create feedback');
-  
   const createdFeedback = await response.json();
   allFeedback.unshift(createdFeedback);
-  
-  // Add new feedback to DOM without full refresh
-  const filtered = getFilteredFeedback();
-  displayFeedback(filtered);
+  displayFeedback(getFilteredFeedback());
   updateStats();
 }
 
@@ -294,7 +255,7 @@ async function createFeedback(studentName, comment) {
 async function updateFeedback(studentName, comment) {
   const oldData = allFeedback.find(f => f.id === editingId);
   
-  const response = await fetch(`${API_URL}/${editingId}`, {
+  await fetch(`${API_URL}/${editingId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -304,20 +265,10 @@ async function updateFeedback(studentName, comment) {
     })
   });
   
-  if (!response.ok) throw new Error('Failed to update feedback');
-  
-  // Update local data and DOM element directly
   const feedbackIndex = allFeedback.findIndex(f => f.id === editingId);
   if (feedbackIndex !== -1) {
     allFeedback[feedbackIndex] = { ...allFeedback[feedbackIndex], studentName, comment };
-    
-    // Update DOM element directly
-    const feedbackElement = document.querySelector(`[data-id="${editingId}"]`).closest('.feedback');
-    const authorElement = feedbackElement.querySelector('.feedback-author');
-    const contentElement = feedbackElement.querySelector('.feedback-content');
-    
-    authorElement.innerHTML = `<i class="fas fa-user-circle"></i> ${escapeHtml(studentName)}`;
-    contentElement.textContent = comment;
+    displayFeedback(getFilteredFeedback());
   }
 }
 
@@ -352,21 +303,18 @@ function toggleTheme() {
 
 // Handle sorting
 function handleSort() {
-  const filtered = getFilteredFeedback();
-  displayFeedback(filtered);
+  displayFeedback(getFilteredFeedback());
 }
 
 // Handle search
 function handleSearch() {
-  const filtered = getFilteredFeedback();
-  displayFeedback(filtered);
+  displayFeedback(getFilteredFeedback());
 }
 
 // Get filtered and sorted feedback
 function getFilteredFeedback() {
   let filtered = [...allFeedback];
   
-  // Apply search filter
   const searchTerm = searchInput.value.toLowerCase().trim();
   if (searchTerm) {
     filtered = filtered.filter(item => 
@@ -375,7 +323,6 @@ function getFilteredFeedback() {
     );
   }
   
-  // Apply sorting
   const sortBy = sortFilter.value;
   switch (sortBy) {
     case 'newest':
@@ -401,21 +348,6 @@ function updateStats() {
   totalFeedbackSpan.textContent = `${total} Feedback${total !== 1 ? 's' : ''}`;
 }
 
-// Show notification
-function showNotification(message, type = 'info') {
-  notification.textContent = message;
-  notification.className = `notification ${type} show`;
-  
-  setTimeout(() => {
-    hideNotification();
-  }, 3000);
-}
-
-// Hide notification
-function hideNotification() {
-  notification.classList.remove('show');
-}
-
 // Escape HTML to prevent XSS
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -429,6 +361,3 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
-
-          
-

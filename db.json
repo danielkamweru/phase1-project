@@ -2,33 +2,70 @@
   "feedback": [
     {
       "id": "1",
-      "studentName": "Alice",
-      "comment": "Great and lovely experience",
-      "votes": 11
+      "studentName": "Sarah Johnson",
+      "comment": "Amazing course! The interactive sessions really helped me understand complex concepts.",
+      "votes": 26
     },
     {
       "id": "2",
-      "studentName": "Bob",
-      "comment": "Could use more examples.",
-      "votes": 3
+      "studentName": "Michael Chen",
+      "comment": "Could use more practical examples, but overall content is solid.",
+      "votes": 23
     },
     {
       "id": "3",
-      "studentName": "Charlie",
-      "comment": "Very engaging lectures.",
-      "votes": 7
+      "studentName": "Emma Rodriguez",
+      "comment": "The instructor's teaching style is very engaging and easy to follow.",
+      "votes": 16
     },
     {
       "id": "4",
-      "studentName": "Diana",
-      "comment": "Assignments are too hard.",
-      "votes": 2
+      "studentName": "David Thompson",
+      "comment": "Assignments are challenging but fair. Great learning experience!",
+      "votes": 9
     },
     {
       "id": "5",
-      "studentName": "Ethan",
-      "comment": "Loved the group projects!",
-      "votes": 5
+      "studentName": "Priya Patel",
+      "comment": "Loved the group projects! They really enhanced collaborative learning.",
+      "votes": 12
+    },
+    {
+      "id": "6",
+      "studentName": "James Wilson",
+      "comment": "Excellent course structure and well-organized materials.",
+      "votes": 14
+    },
+    {
+      "id": "7",
+      "studentName": "Aisha Mohammed",
+      "comment": "The online resources are incredibly helpful for self-study.",
+      "votes": 9
+    },
+    {
+      "id": "8",
+      "studentName": "Carlos Martinez",
+      "comment": "More time for Q&A sessions would be beneficial.",
+      "votes": 8
+    },
+    {
+      "id": "9",
+      "studentName": "Lisa Anderson",
+      "comment": "Perfect balance between theory and practical application!",
+      "votes": 17
+    },
+    {
+      "id": "10",
+      "studentName": "Ryan O'Connor",
+      "comment": "The feedback system helps track progress effectively.",
+      "votes": 7
+    },
+    {
+      "id": "f764",
+      "studentName": "Daniel kamweru",
+      "comment": "I think the teachers should use more elaborate examples",
+      "votes": 3,
+      "timestamp": 1763228489243
     }
   ]
 }

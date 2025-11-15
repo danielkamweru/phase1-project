@@ -4,19 +4,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Feedback Poll</title>
+  <title>📝 Student Feedback Poll</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Student Feedback Poll</h1>
-  <button id="toggle-mode">Toggle Dark/Light Mode</button>
-  <h2>Enter Your Feedback</h2>
-  <form id="feedback-form">
-    <input type="text" id="studentName" placeholder="Your Name" required />
-    <textarea id="comment" placeholder="Your feedback" required></textarea>
-    <button type="submit" id="submit">Submit</button>
-  </form>
-  <div id="feedback-container"></div>
-  <script src="script.js"></script>
+  <header class="header">
+    <div class="container">
+      <h1><i class="fas fa-comments"></i> Student Feedback Poll</h1>
+      <div class="header-controls">
+        <button id="toggle-mode" class="theme-btn">
+          <i class="fas fa-moon"></i>
+          <span>Dark Mode</span>
+        </button>
+        <div class="stats">
+          <span id="total-feedback">0 Feedbacks</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="form-section">
+      <h2><i class="fas fa-edit"></i> Share Your Thoughts</h2>
+      <form id="feedback-form" class="feedback-form">
+        <div class="form-group">
+          <label for="studentName">Your Name</label>
+          <input type="text" id="studentName" placeholder="Enter your name" required />
+        </div>
+        <div class="form-group">
+          <label for="comment">Your Feedback</label>
+          <textarea id="comment" placeholder="Share your thoughts..." required></textarea>
+          <div class="char-count"><span id="char-counter">0</span>/500</div>
+        </div>
+        <button type="submit" id="submit" class="submit-btn">
+          <i class="fas fa-paper-plane"></i>
+          <span id="submit-text">Submit Feedback</span>
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <section class="feedback-section">
+    <div class="container">
+      <div class="section-header">
+        <h2><i class="fas fa-list"></i> All Feedback</h2>
+        <div class="filters">
+          <select id="sort-filter">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="most-voted">Most Voted</option>
+            <option value="least-voted">Least Voted</option>
+          </select>
+          <input type="text" id="search-input" placeholder="🔍 Search feedback...">
+        </div>
+      </div>
+      <div id="feedback-container" class="feedback-grid"></div>
+      <div id="no-feedback" class="no-feedback" style="display: none;">
+        <i class="fas fa-inbox"></i>
+        <p>No feedback found. Be the first to share!</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="notification" class="notification"></div>
+  <script src="debug-vote.js"></script>
 </body>
 </html>
