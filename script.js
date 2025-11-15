@@ -89,59 +89,70 @@ function setupEventListeners() {
 }
 
 // Global vote functions - SIMPLE AND NO REFRESH
-function voteUp(id) {
+window.voteUp = function(id) {
   console.log('Vote up clicked for:', id);
   const voteElement = document.getElementById(`votes-${id}`);
   if (voteElement) {
     const currentVotes = parseInt(voteElement.textContent);
     voteElement.textContent = currentVotes + 1;
   }
-}
+};
 
-function voteDown(id) {
+window.voteDown = function(id) {
   console.log('Vote down clicked for:', id);
   const voteElement = document.getElementById(`votes-${id}`);
   if (voteElement) {
     const currentVotes = parseInt(voteElement.textContent);
     voteElement.textContent = currentVotes - 1;
   }
-}
+};
 
-function editFeedback(id) {
+window.editFeedback = function(id) {
   console.log('Edit clicked for:', id);
-  const item = allFeedback.find(f => f.id === id);
-  if (item) {
-    // Populate form
-    document.getElementById('studentName').value = item.studentName;
-    document.getElementById('comment').value = item.comment;
-    
-    // Set edit mode
-    isEditing = true;
-    editingId = id;
-    
-    // Update submit button
-    document.getElementById('submit-text').textContent = 'Update Feedback';
-    document.getElementById('submit').style.background = 'linear-gradient(135deg, #ff6b35 0%, #f77f00 100%)';
-    
-    // Update character counter
-    document.getElementById('char-counter').textContent = item.comment.length;
-    
-    // Scroll to form
-    document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
-    document.getElementById('studentName').focus();
-  }
+  
+  // Get data from DOM instead of allFeedback array
+  const feedbackElement = document.querySelector(`[data-id="${id}"]`);
+  if (!feedbackElement) return;
+  
+  const authorElement = feedbackElement.querySelector('.feedback-author');
+  const contentElement = feedbackElement.querySelector('.feedback-content');
+  
+  if (!authorElement || !contentElement) return;
+  
+  // Extract name (remove emoji)
+  const currentName = authorElement.textContent.replace('👤 ', '').trim();
+  const currentComment = contentElement.textContent.trim();
+  
+  // Populate form
+  document.getElementById('studentName').value = currentName;
+  document.getElementById('comment').value = currentComment;
+  
+  // Set edit mode
+  isEditing = true;
+  editingId = id;
+  
+  // Update submit button
+  document.getElementById('submit-text').textContent = 'Update Feedback';
+  document.getElementById('submit').style.background = 'linear-gradient(135deg, #ff6b35 0%, #f77f00 100%)';
+  
+  // Update character counter
+  document.getElementById('char-counter').textContent = currentComment.length;
+  
+  // Scroll to form
+  document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('studentName').focus();
 }
 
-function deleteFeedback(id) {
+window.deleteFeedback = function(id) {
   console.log('Delete clicked for:', id);
   if (confirm('Delete this feedback?')) {
-    const feedbackElement = document.querySelector(`[data-id="${id}"]`).closest('.feedback');
+    const feedbackElement = document.querySelector(`[data-id="${id}"]`);
     if (feedbackElement) {
       feedbackElement.remove();
       updateStats();
     }
   }
-}
+};
 
 // Load and display feedback
 async function loadFeedback() {
@@ -250,19 +261,17 @@ function handleSubmit(e) {
   if (!studentName || !comment) return;
   
   if (isEditing) {
-    // Update existing feedback
-    const feedbackElement = document.querySelector(`[data-id="${editingId}"]`).closest('.feedback');
+    // Update existing feedback - DOM only
+    const feedbackElement = document.querySelector(`[data-id="${editingId}"]`);
     if (feedbackElement) {
       // Update the displayed content
-      feedbackElement.querySelector('.feedback-author').innerHTML = `👤 ${studentName}`;
-      feedbackElement.querySelector('.feedback-content').textContent = comment;
+      const authorElement = feedbackElement.querySelector('.feedback-author');
+      const contentElement = feedbackElement.querySelector('.feedback-content');
       
-      // Update local data
-      const feedbackIndex = allFeedback.findIndex(f => f.id === editingId);
-      if (feedbackIndex !== -1) {
-        allFeedback[feedbackIndex].studentName = studentName;
-        allFeedback[feedbackIndex].comment = comment;
-      }
+      if (authorElement) authorElement.innerHTML = `👤 ${studentName}`;
+      if (contentElement) contentElement.textContent = comment;
+      
+      console.log('Updated feedback:', editingId, studentName, comment);
     }
   } else {
     // Add new feedback (simplified)
