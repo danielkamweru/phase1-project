@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📝 Student Feedback Poll</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
 </head>
 <body>
   <header class="header">
     <div class="container">
-      <h1><i class="fas fa-comments"></i> Student Feedback Poll</h1>
+      <h1>💬 Student Feedback Poll</h1>
       <div class="header-controls">
         <button id="toggle-mode" class="theme-btn">
-          <i class="fas fa-moon"></i>
+          🌙
           <span>Dark Mode</span>
         </button>
         <div class="stats">
@@ -26,7 +26,7 @@
 
   <main class="container">
     <section class="form-section">
-      <h2><i class="fas fa-edit"></i> Share Your Thoughts</h2>
+      <h2>✏️ Share Your Thoughts</h2>
       <form id="feedback-form" class="feedback-form">
         <div class="form-group">
           <label for="studentName">Your Name</label>
@@ -38,7 +38,7 @@
           <div class="char-count"><span id="char-counter">0</span>/500</div>
         </div>
         <button type="submit" id="submit" class="submit-btn">
-          <i class="fas fa-paper-plane"></i>
+          ✈️
           <span id="submit-text">Submit Feedback</span>
         </button>
       </form>
@@ -48,7 +48,7 @@
   <section class="feedback-section">
     <div class="container">
       <div class="section-header">
-        <h2><i class="fas fa-list"></i> All Feedback</h2>
+        <h2>📋 All Feedback</h2>
         <div class="filters">
           <select id="sort-filter">
             <option value="newest">Newest First</option>
@@ -61,13 +61,13 @@
       </div>
       <div id="feedback-container" class="feedback-grid"></div>
       <div id="no-feedback" class="no-feedback" style="display: none;">
-        <i class="fas fa-inbox"></i>
+        📥
         <p>No feedback found. Be the first to share!</p>
       </div>
     </div>
   </section>
 
   <div id="notification" class="notification"></div>
-  <script src="debug-vote.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
