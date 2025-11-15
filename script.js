@@ -111,9 +111,24 @@ function editFeedback(id) {
   console.log('Edit clicked for:', id);
   const item = allFeedback.find(f => f.id === id);
   if (item) {
+    // Populate form
     document.getElementById('studentName').value = item.studentName;
     document.getElementById('comment').value = item.comment;
+    
+    // Set edit mode
+    isEditing = true;
+    editingId = id;
+    
+    // Update submit button
+    document.getElementById('submit-text').textContent = 'Update Feedback';
+    document.getElementById('submit').style.background = 'linear-gradient(135deg, #ff6b35 0%, #f77f00 100%)';
+    
+    // Update character counter
+    document.getElementById('char-counter').textContent = item.comment.length;
+    
+    // Scroll to form
     document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('studentName').focus();
   }
 }
 
@@ -226,30 +241,69 @@ async function handleDelete(id) {
 }
 
 // Handle form submission
-async function handleSubmit(e) {
+function handleSubmit(e) {
   e.preventDefault();
   
-  const studentName = studentNameInput.value.trim();
-  const comment = commentInput.value.trim();
+  const studentName = document.getElementById('studentName').value.trim();
+  const comment = document.getElementById('comment').value.trim();
   
   if (!studentName || !comment) return;
   
-  submitText.textContent = 'Submitting...';
-  submitBtn.disabled = true;
-  
-  try {
-    if (isEditing) {
-      await updateFeedback(studentName, comment);
-    } else {
-      await createFeedback(studentName, comment);
+  if (isEditing) {
+    // Update existing feedback
+    const feedbackElement = document.querySelector(`[data-id="${editingId}"]`).closest('.feedback');
+    if (feedbackElement) {
+      // Update the displayed content
+      feedbackElement.querySelector('.feedback-author').innerHTML = `👤 ${studentName}`;
+      feedbackElement.querySelector('.feedback-content').textContent = comment;
+      
+      // Update local data
+      const feedbackIndex = allFeedback.findIndex(f => f.id === editingId);
+      if (feedbackIndex !== -1) {
+        allFeedback[feedbackIndex].studentName = studentName;
+        allFeedback[feedbackIndex].comment = comment;
+      }
     }
-    resetForm();
-  } catch (error) {
-    console.error('Submit failed:', error);
-  } finally {
-    submitText.textContent = isEditing ? 'Update Feedback' : 'Submit Feedback';
-    submitBtn.disabled = false;
+  } else {
+    // Add new feedback (simplified)
+    const newId = Date.now().toString();
+    const newFeedback = {
+      id: newId,
+      studentName,
+      comment,
+      votes: 0
+    };
+    
+    allFeedback.unshift(newFeedback);
+    
+    // Add to DOM
+    const container = document.getElementById('feedback-container');
+    const div = document.createElement('div');
+    div.className = 'feedback';
+    div.setAttribute('data-id', newId);
+    div.innerHTML = `
+      <div class="feedback-header">
+        <div class="feedback-author">👤 ${studentName}</div>
+        <div class="feedback-date">${new Date().toLocaleDateString()}</div>
+      </div>
+      <div class="feedback-content">${comment}</div>
+      <div class="feedback-actions">
+        <div class="vote-section">
+          <span onclick="voteUp('${newId}'); return false;" class="vote-btn upvote" title="Upvote" style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 18px; transition: all 0.3s ease;">👍</span>
+          <div class="vote-count" id="votes-${newId}">0</div>
+          <span onclick="voteDown('${newId}'); return false;" class="vote-btn downvote" title="Downvote" style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 18px; transition: all 0.3s ease;">👎</span>
+        </div>
+        <div class="action-buttons">
+          <span onclick="editFeedback('${newId}'); return false;" class="action-btn edit-btn" title="Edit" style="cursor: pointer; padding: 8px; border-radius: 50%; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 16px;">✏️</span>
+          <span onclick="deleteFeedback('${newId}'); return false;" class="action-btn delete-btn" title="Delete" style="cursor: pointer; padding: 8px; border-radius: 50%; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 16px;">🗑️</span>
+        </div>
+      </div>
+    `;
+    container.insertBefore(div, container.firstChild);
   }
+  
+  resetForm();
+  updateStats();
 }
 
 // Create new feedback
@@ -296,13 +350,12 @@ async function updateFeedback(studentName, comment) {
 
 // Reset form
 function resetForm() {
-  form.reset();
+  document.getElementById('feedback-form').reset();
   isEditing = false;
   editingId = null;
-  submitText.textContent = 'Submit Feedback';
-  submitBtn.style.background = 'linear-gradient(135deg, #06d6a0 0%, #118ab2 100%)';
-  charCounter.textContent = '0';
-  validateForm();
+  document.getElementById('submit-text').textContent = 'Submit Feedback';
+  document.getElementById('submit').style.background = 'linear-gradient(135deg, #06d6a0 0%, #118ab2 100%)';
+  document.getElementById('char-counter').textContent = '0';
 }
 
 // Form validation
